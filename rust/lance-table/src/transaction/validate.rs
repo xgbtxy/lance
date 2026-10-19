@@ -2116,6 +2116,7 @@ mod tests {
             let err = result.unwrap_err();
             assert!(err.to_string().contains("AddField"), "{err}");
             assert!(err.to_string().contains("Detached"), "{err}");
+            assert!(err.to_string().contains("reserving field ids"), "{err}");
         }
     }
 
