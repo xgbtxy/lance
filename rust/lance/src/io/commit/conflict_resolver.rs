@@ -758,8 +758,7 @@ impl<'a> TransactionRebase<'a> {
     ) -> Result<()> {
         if let Operation::Delete { .. } = &self.transaction.operation {
             match &other_transaction.operation {
-                // A concurrent action-based transaction is compared by action
-                // footprint rather than by operation pair.
+                // A mixed named/action pair fails closed; see check_action_txn.
                 Operation::CompositeOperation(_) => {
                     self.check_action_txn(other_transaction, other_version)
                 }
@@ -921,8 +920,7 @@ impl<'a> TransactionRebase<'a> {
             }
 
             match &other_transaction.operation {
-                // A concurrent action-based transaction is compared by action
-                // footprint rather than by operation pair.
+                // A mixed named/action pair fails closed; see check_action_txn.
                 Operation::CompositeOperation(_) => {
                     self.check_action_txn(other_transaction, other_version)
                 }
@@ -1139,8 +1137,7 @@ impl<'a> TransactionRebase<'a> {
         {
             let self_is_tagged_trim = is_tagged_trim_operation(new_indices, removed_indices);
             match &other_transaction.operation {
-                // A concurrent action-based transaction is compared by action
-                // footprint rather than by operation pair.
+                // A mixed named/action pair fails closed; see check_action_txn.
                 Operation::CompositeOperation(_) => {
                     self.check_action_txn(other_transaction, other_version)
                 }
@@ -1618,8 +1615,7 @@ impl<'a> TransactionRebase<'a> {
         } = &self.transaction.operation
         {
             match &other_transaction.operation {
-                // A concurrent action-based transaction is compared by action
-                // footprint rather than by operation pair.
+                // A mixed named/action pair fails closed; see check_action_txn.
                 Operation::CompositeOperation(_) => {
                     self.check_action_txn(other_transaction, other_version)
                 }
@@ -1885,8 +1881,7 @@ impl<'a> TransactionRebase<'a> {
         other_version: u64,
     ) -> Result<()> {
         match &other_transaction.operation {
-            // A concurrent action-based transaction is compared by action
-            // footprint rather than by operation pair.
+            // A mixed named/action pair fails closed; see check_action_txn.
             Operation::CompositeOperation(_) => {
                 self.check_action_txn(other_transaction, other_version)
             }
@@ -1943,8 +1938,7 @@ impl<'a> TransactionRebase<'a> {
         other_version: u64,
     ) -> Result<()> {
         match &other_transaction.operation {
-            // A concurrent action-based transaction is compared by action
-            // footprint rather than by operation pair.
+            // A mixed named/action pair fails closed; see check_action_txn.
             Operation::CompositeOperation(_) => {
                 self.check_action_txn(other_transaction, other_version)
             }
@@ -1982,8 +1976,7 @@ impl<'a> TransactionRebase<'a> {
     ) -> Result<()> {
         if let Operation::DataReplacement { replacements } = &self.transaction.operation {
             match &other_transaction.operation {
-                // A concurrent action-based transaction is compared by action
-                // footprint rather than by operation pair.
+                // A mixed named/action pair fails closed; see check_action_txn.
                 Operation::CompositeOperation(_) => {
                     self.check_action_txn(other_transaction, other_version)
                 }
@@ -2169,8 +2162,7 @@ impl<'a> TransactionRebase<'a> {
         other_version: u64,
     ) -> Result<()> {
         match &other_transaction.operation {
-            // A concurrent action-based transaction is compared by action
-            // footprint rather than by operation pair.
+            // A mixed named/action pair fails closed; see check_action_txn.
             Operation::CompositeOperation(_) => {
                 self.check_action_txn(other_transaction, other_version)
             }
@@ -2297,8 +2289,7 @@ impl<'a> TransactionRebase<'a> {
         other_version: u64,
     ) -> Result<()> {
         match &other_transaction.operation {
-            // A concurrent action-based transaction is compared by action
-            // footprint rather than by operation pair.
+            // A mixed named/action pair fails closed; see check_action_txn.
             Operation::CompositeOperation(_) => {
                 self.check_action_txn(other_transaction, other_version)
             }
@@ -2343,8 +2334,7 @@ impl<'a> TransactionRebase<'a> {
         other_version: u64,
     ) -> Result<()> {
         match &other_transaction.operation {
-            // A concurrent action-based transaction is compared by action
-            // footprint rather than by operation pair.
+            // A mixed named/action pair fails closed; see check_action_txn.
             Operation::CompositeOperation(_) => {
                 self.check_action_txn(other_transaction, other_version)
             }
@@ -2379,8 +2369,7 @@ impl<'a> TransactionRebase<'a> {
         other_version: u64,
     ) -> Result<()> {
         match &other_transaction.operation {
-            // A concurrent action-based transaction is compared by action
-            // footprint rather than by operation pair.
+            // A mixed named/action pair fails closed; see check_action_txn.
             Operation::CompositeOperation(_) => {
                 self.check_action_txn(other_transaction, other_version)
             }
@@ -2414,8 +2403,7 @@ impl<'a> TransactionRebase<'a> {
         other_version: u64,
     ) -> Result<()> {
         match &other_transaction.operation {
-            // A concurrent action-based transaction is compared by action
-            // footprint rather than by operation pair.
+            // A mixed named/action pair fails closed; see check_action_txn.
             Operation::CompositeOperation(_) => {
                 self.check_action_txn(other_transaction, other_version)
             }
@@ -2459,8 +2447,7 @@ impl<'a> TransactionRebase<'a> {
         } = &self.transaction.operation
         {
             match &other_transaction.operation {
-                // A concurrent action-based transaction is compared by action
-                // footprint rather than by operation pair.
+                // A mixed named/action pair fails closed; see check_action_txn.
                 Operation::CompositeOperation(_) => {
                     self.check_action_txn(other_transaction, other_version)
                 }
@@ -2531,8 +2518,7 @@ impl<'a> TransactionRebase<'a> {
         } = &self.transaction.operation
         {
             match &other_transaction.operation {
-                // A concurrent action-based transaction is compared by action
-                // footprint rather than by operation pair.
+                // A mixed named/action pair fails closed; see check_action_txn.
                 Operation::CompositeOperation(_) => {
                     self.check_action_txn(other_transaction, other_version)
                 }
@@ -2638,8 +2624,7 @@ impl<'a> TransactionRebase<'a> {
                     }
                     Ok(())
                 }
-                // A concurrent action-based transaction is compared by action
-                // footprint rather than by operation pair.
+                // A mixed named/action pair fails closed; see check_action_txn.
                 Operation::CompositeOperation(_) => {
                     self.check_action_txn(other_transaction, other_version)
                 }
