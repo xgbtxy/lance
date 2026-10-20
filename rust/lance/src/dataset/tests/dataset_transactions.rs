@@ -2701,7 +2701,6 @@ mod composite {
             vec![Action::AlterField(AlterField {
                 field: Ref::Committed(field_id as u64),
                 name: Some("renamed".into()),
-                logical_type: None,
                 nullable: Some(true),
             })],
         )
@@ -3201,7 +3200,6 @@ mod composite {
             vec![Action::AlterField(AlterField {
                 field: Ref::Committed(0),
                 name: None,
-                logical_type: None,
                 nullable: Some(true),
             })],
         )
@@ -3212,7 +3210,6 @@ mod composite {
         vec![Action::AlterField(AlterField {
             field: Ref::Committed(0),
             name: None,
-            logical_type: None,
             nullable: Some(false),
         })]
     }
@@ -3252,7 +3249,6 @@ mod composite {
             Action::AlterField(AlterField {
                 field: Ref::Local(0),
                 name: None,
-                logical_type: None,
                 nullable: Some(false),
             }),
         ];
@@ -3320,25 +3316,6 @@ mod composite {
         commit_expecting_conflict(&current, read_version, stale).await;
     }
 
-    #[tokio::test]
-    async fn test_alter_field_rejects_a_retype() {
-        let dataset = test_dataset(false).await;
-
-        let error = try_commit(
-            dataset,
-            vec![Action::AlterField(AlterField {
-                field: Ref::Committed(0),
-                name: None,
-                logical_type: Some("int64".into()),
-                nullable: None,
-            })],
-        )
-        .await
-        .unwrap_err();
-
-        assert!(matches!(error, Error::NotSupported { .. }), "{error:?}");
-    }
-
     /// Detached commits allocate field ids from their own parent's watermark, so
     /// two of them, or one and the main line, can mint the same id for
     /// different fields.
@@ -3368,7 +3345,6 @@ mod composite {
         detached(vec![Action::AlterField(AlterField {
             field: Ref::Committed(0),
             name: Some("renamed".into()),
-            logical_type: None,
             nullable: None,
         })])
         .await
