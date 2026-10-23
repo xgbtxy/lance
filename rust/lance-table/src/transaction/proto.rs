@@ -841,7 +841,7 @@ mod tests {
     use crate::format::DataFile;
     use crate::format::overlay::OverlayCoverage;
     use crate::transaction::action::{
-        Action, AddDataFile, AddFragment, Ref, RemoveFragment, UserStep,
+        Action, AddDataFile, AddFragment, FieldRef, Ref, RemoveFragment, UserStep,
     };
     use crate::transaction::operation::RewriteGroup;
     use lance_file::version::ConcreteFileVersion;
@@ -1060,10 +1060,9 @@ mod tests {
                     Action::AddDataFile(AddDataFile {
                         fragment: Ref::Local(token),
                         file: wide_data_file(index, vec![-1; WIDE_COLUMNS as usize]),
-                        field_ids: (0..WIDE_COLUMNS)
-                            .map(|field| Ref::Committed(field as u64))
-                            .collect(),
+                        field_ids: (0..WIDE_COLUMNS).map(FieldRef::Committed).collect(),
                         data_change,
+                        base: None,
                     }),
                 ]
             })
