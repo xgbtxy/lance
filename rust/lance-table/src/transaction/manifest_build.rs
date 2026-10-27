@@ -658,6 +658,7 @@ impl Transaction {
                 transaction_file_path,
                 config,
                 read_version_state,
+                &frag_reuse,
             );
         }
 
