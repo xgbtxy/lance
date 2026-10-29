@@ -1,0 +1,91 @@
+{
+  "tested_at_utc": "2026-10-29T14:38:00Z",
+  "source_wheel": "pylance==14.0.2",
+  "legacy_wheel": "pylance==8.0.1",
+  "dataset_version": 2,
+  "base_rows": 2,
+  "base_fts_matches": 1,
+  "flag": {
+    "writer_feature_flags_field": 10,
+    "reader_feature_flags_field_9": 0,
+    "value": 1048576,
+    "manifest_version_verified": 2,
+    "source_copy_unchanged": true,
+    "only_latest_manifest_changed": true
+  },
+  "write_attempts": [
+    {
+      "release": "8.0.1",
+      "method": "insert",
+      "refused": true,
+      "dataset_version_before_after": [
+        2,
+        2
+      ],
+      "base_rows_unchanged": true,
+      "files_unchanged_after_refusal": true,
+      "indices_after": [],
+      "fts_after": {
+        "rows": null,
+        "code": null
+      }
+    },
+    {
+      "release": "8.0.1",
+      "method": "append",
+      "refused": true,
+      "dataset_version_before_after": [
+        2,
+        2
+      ],
+      "base_rows_unchanged": true,
+      "files_unchanged_after_refusal": true,
+      "indices_after": [],
+      "fts_after": {
+        "rows": null,
+        "code": null
+      }
+    },
+    {
+      "release": "14.0.2",
+      "method": "insert",
+      "refused": true,
+      "dataset_version_before_after": [
+        2,
+        2
+      ],
+      "base_rows_unchanged": true,
+      "files_unchanged_after_refusal": true,
+      "indices_after": [
+        "code_idx"
+      ],
+      "fts_after": {
+        "rows": 1,
+        "code": [
+          "def getUserName(): pass"
+        ]
+      }
+    },
+    {
+      "release": "14.0.2",
+      "method": "append",
+      "refused": true,
+      "dataset_version_before_after": [
+        2,
+        2
+      ],
+      "base_rows_unchanged": true,
+      "files_unchanged_after_refusal": true,
+      "indices_after": [
+        "code_idx"
+      ],
+      "fts_after": {
+        "rows": 1,
+        "code": [
+          "def getUserName(): pass"
+        ]
+      }
+    }
+  ],
+  "all_assertions_passed": true
+}

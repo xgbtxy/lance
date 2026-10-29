@@ -1,0 +1,81 @@
+Lance #9670 synthetic writer-flag probe
+Captured 2026-10-29. This is a local compatibility experiment, not a code fix
+or an upstream acceptance claim.
+
+Purpose
+
+Check whether setting only Manifest.writer_feature_flags bit 20 prevents
+released old writers from committing over a v3 code full-text-search index.
+The probe uses a throwaway copy of a local dataset. It preserves the reader
+feature word, manifest version, index section, index files, data files, and
+original dataset.
+
+Portable setup
+
+Use two independent CPython 3.12 environments:
+
+    uv venv --python 3.12 v14
+    uv pip install --python v14/bin/python pylance==14.0.2
+    uv venv --python 3.12 v8
+    uv pip install --python v8/bin/python pylance==8.0.1
+
+On Windows, replace v14/bin/python and v8/bin/python with the corresponding
+Scripts/python.exe paths. Run every command from the directory containing
+fts_writer_fence_probe.py, or pass its path explicitly.
+
+The portable command sequence is:
+
+    <PY14> fts_writer_fence_probe.py create --dataset probe/source.lance
+    <PY14> fts_writer_fence_probe.py flag --source probe/source.lance --dataset probe/v8-insert.lance
+    <PY8>  fts_writer_fence_probe.py probe --dataset probe/v8-insert.lance --method insert
+    <PY14> fts_writer_fence_probe.py flag --source probe/source.lance --dataset probe/v8-append.lance
+    <PY8>  fts_writer_fence_probe.py probe --dataset probe/v8-append.lance --method append
+    <PY14> fts_writer_fence_probe.py flag --source probe/source.lance --dataset probe/v14-insert.lance
+    <PY14> fts_writer_fence_probe.py probe --dataset probe/v14-insert.lance --method insert
+    <PY14> fts_writer_fence_probe.py flag --source probe/source.lance --dataset probe/v14-append.lance
+    <PY14> fts_writer_fence_probe.py probe --dataset probe/v14-append.lance --method append
+
+PY8 and PY14 mean the Python executables from the two virtual environments.
+Give each command a new destination path; flag refuses to overwrite one. Probe
+exits nonzero if the write succeeds or if data changes.
+
+What the script verifies
+
+- create writes two rows and a code analyzer v3 INVERTED index.
+- flag copies the dataset, identifies the latest manifest by parsing
+  Manifest.version (protobuf field 3) and matching it to
+  _versions/latest_version_hint.json, then sets only writer flags (field 10)
+  bit 20. It checks reader flags (field 9) stay zero, only the latest manifest
+  file differs, and the source copy remains unchanged.
+- probe runs either Dataset.insert or write_dataset(mode="append"). It requires
+  the unsupported-writer refusal, unchanged dataset version, unchanged base
+  rows, and byte-identical fixture files after the refusal. Pylance 14.0.2 also
+  must retain the index and return the original FTS match.
+
+Verified run
+
+The script was run with the official PyPI wheels pylance==14.0.2 and
+pylance==8.0.1 on CPython 3.12. It passed all four write probes:
+
+- Pylance 8.0.1 refused insert and append. Both datasets stayed at version 2
+  with the two original rows readable.
+- Pylance 14.0.2 refused insert and append. Both datasets stayed at version 2;
+  code_idx remained present; the original FTS query returned its one expected
+  row.
+- For each copy, only the version-2 manifest changed when the synthetic flag
+  was set. Raw-wire inspection found reader flags 0 and writer flags 1048576.
+  Manifest.version was 2 and matched the latest-version hint.
+- A separate reader-word control (field 9 bit 20) made Pylance 8.0.1 refuse to
+  open the table. Successful writer-word runs left field 9 at 0.
+
+Machine-readable evidence from the portable script run is summarized in
+VERIFIED_SUMMARY.json. Raw local command receipts and separate version-2 manifest checks were retained
+separately.
+
+Limitations
+
+Bit 20 is synthetic. This experiment shows how these released clients respond
+to a flagged copied manifest; it does not claim any released version implements
+the bit, that the upstream code change is already made, or that the issue has
+been accepted or merged. Manifest filenames are reverse ordered, so the probe selects the latest
+manifest by its decoded version and the latest-version hint.
